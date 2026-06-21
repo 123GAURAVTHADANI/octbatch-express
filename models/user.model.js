@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-
+const bcrypt = require("bcrypt");
 let userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,11 +24,12 @@ let userSchema = new mongoose.Schema({
     type: Number,
     unique: true,
     required: [true, "Phone Number is required"],
+    match: [/^[6-9]\d{9}$/, "Invalid Indian mobile number"],
   },
 });
 
-userSchema.pre("save", function () {
-  console.log("Data is getting saved!!!!");
+userSchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 10);
 });
 
 let User = mongoose.model("user", userSchema);
