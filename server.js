@@ -7,31 +7,35 @@ const {
   adhaarCardCheckMiddleware,
 } = require("./middlewares/user.middleware");
 const { logger } = require("./middlewares/logger.middleware");
-
+var cors = require("cors");
+const { dbConfig } = require("./configurations/db.config");
 dotenv.config();
 
 var app = express();
-
+app.use(cors());
 let port = process.env.PORT;
 
 // application level middleware
 app.use(logger);
+// in build middleware
+app.use(express.json());
 
 // Router level middleware
 app.use(
   "/api/v1/user",
-  ageCheckMiddleware,
-  adhaarCardCheckMiddleware,
+  // ageCheckMiddleware,
+  // adhaarCardCheckMiddleware,
   userRouter,
 );
 
 // app.use("/api/v1/order", orderRouter);
 
-app.listen(port, () => {
+app.listen(port, async () => {
   console.log(`Listening to the port`);
+  await dbConfig();
 });
 
-// http://localhost:5001/api/v1/users/getUsers
+//http://localhost:5001/api/v1/users/getUsers
 // http://localhost:5001/api/v1/users/createUser
 // http://localhost:5001/api/v1/order/getOrders
 
