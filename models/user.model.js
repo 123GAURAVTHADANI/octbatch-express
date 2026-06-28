@@ -26,11 +26,19 @@ let userSchema = new mongoose.Schema({
     required: [true, "Phone Number is required"],
     match: [/^[6-9]\d{9}$/, "Invalid Indian mobile number"],
   },
+  role: {
+    type: String,
+    enum: ["admin", "super-admin", "student", "faculty"],
+  },
 });
 
 userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
+
+userSchema.methods.comparePassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 let User = mongoose.model("user", userSchema);
 

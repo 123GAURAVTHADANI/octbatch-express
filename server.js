@@ -9,10 +9,12 @@ const {
 const { logger } = require("./middlewares/logger.middleware");
 var cors = require("cors");
 const { dbConfig } = require("./configurations/db.config");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 
 var app = express();
 app.use(cors());
+app.use(cookieParser());
 let port = process.env.PORT;
 
 // application level middleware
