@@ -2,6 +2,7 @@ const { compare } = require("bcrypt");
 const { User } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 function getUser(request, response) {
+  console.log(request.meranaam);
   User.find({})
     .then((res) => {
       response.json({ message: "Users!!!!!", data: res });
@@ -22,7 +23,7 @@ function createUser(request, response) {
 }
 async function signIn(request, response) {
   try {
-    let { email, password } = request.body;
+    let { email, password, role } = request.body;
     if (!email || !password) {
       return response
         .status(401)
@@ -38,7 +39,7 @@ async function signIn(request, response) {
     if (!comparePassword) {
       return response.json({ message: "Wrong Password" });
     }
-    let token = await jwt.sign({ email, password }, process.env.JWT_SCREET);
+    let token = await jwt.sign(request.body, process.env.JWT_SCREET);
     response.cookie("token", token);
     response.status(200).json({ message: "Login Success!!" });
   } catch (error) {

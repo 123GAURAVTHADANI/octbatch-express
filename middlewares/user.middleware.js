@@ -24,10 +24,22 @@ async function isAuthorized(req, res, next) {
   if (!decoded) {
     return response.json({ message: "Not verified user" });
   }
+  req.user = decoded;
   next();
 }
+
+function authorize(...roles) {
+  return (request, response, next) => {
+    if (!roles.includes(request.user.role)) {
+      return response.status(403).json({ message: "Forbidden" });
+    }
+    next();
+  };
+}
+
 module.exports = {
   ageCheckMiddleware,
   adhaarCardCheckMiddleware,
   isAuthorized,
+  authorize,
 };
